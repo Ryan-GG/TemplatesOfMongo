@@ -9,10 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>mongo.example</groupId>
-	<artifactId>template</artifactId>
+	<artifactId>templates</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>template</name>
-	<description>Mongo template with examples</description>
+    <packaging>pom</packaging>
+    <name>templates</name>
+	<description>Mongo best practices with templates</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -20,7 +21,11 @@
 	<developers>
 		<developer/>
 	</developers>
-	<scm>
+    <modules>
+        <module>initialize</module>
+		<module>test</module>
+	</modules>
+    <scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>

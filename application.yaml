@@ -1,0 +1,43 @@
+# application.yml
+
+# Application information
+application:
+  name: mongo-templates
+  description: "Mongo best practices in the form of template examples"
+  version: 1.0.0
+  contact:
+    name: "Ryan Gross"
+    email: "ryangros47@gmiail.com"
+
+# Profiles
+spring:
+  profiles:
+    active: dev # Set the active profile here (e.g., dev, prod, etc.)
+
+# MongoDB Configuration (development profile)
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/example
+      database: example
+      username: user
+      password: password
+      authentication-database: authentication
+
+# MongoDB Configuration (production profile)
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  data:
+    mongodb:
+      uri: mongodb://prod.mongodb.net:27017/production
+      database: production
+      username: user
+      password: password
+      authentication-database: authentication
