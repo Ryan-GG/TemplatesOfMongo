@@ -23,7 +23,6 @@
 	</developers>
     <modules>
         <module>initialize</module>
-		<module>test</module>
 	</modules>
     <scm>
 		<connection/>
@@ -61,6 +60,13 @@
 		<dependency>
 			<groupId>org.springframework.modulith</groupId>
 			<artifactId>spring-modulith-starter-mongodb</artifactId>
+		</dependency>
+
+		<!-- MongoDB Java Driver -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver-sync</artifactId>
+			<version>5.2.0</version>
 		</dependency>
 
 		<dependency>
