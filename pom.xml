@@ -23,7 +23,8 @@
 	</developers>
     <modules>
         <module>initialize</module>
-	</modules>
+        <module>pojo</module>
+    </modules>
     <scm>
 		<connection/>
 		<developerConnection/>
@@ -68,6 +69,14 @@
 			<artifactId>mongodb-driver-sync</artifactId>
 			<version>5.2.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-core -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver-core</artifactId>
+			<version>5.2.0</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -159,14 +168,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>

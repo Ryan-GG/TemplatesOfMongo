@@ -4,28 +4,30 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
+import org.bson.Document;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Arrays;
-
-import static com.mongodb.client.model.Filters.eq;
+import java.util.Map;
 
 public class Initialize {
 
     public static final int DEFAULT_DATA_SET_SIZE = 5000;
 
     public static final MongoClientSettings DEFAULT_CONNECTION_SETTINGS = MongoClientSettings.builder()
-            .applyConnectionString(
-                    new ConnectionString("mongodb://localhost:27017/")
-            ).build();
+            .applyConnectionString(new ConnectionString("mongodb://localhost:27017/"))
+            .build();
+
+    //TODO, make this a map from collection to POJO
+    public static final Map<String, Class<?>> COLLECTION_MAP = Map.of(
+            Listing.class.getName(), Listing.class,
+            Neighbourhood.class.getName(), Neighbourhood.class,
+            Reviews.class.getName(), Reviews.class
+    );
+
+    private MongoDatabase mongoDatabase;
 
     public static void main(String[] args)
     {
@@ -37,10 +39,16 @@ public class Initialize {
         DocumentFormat documentFormat = new DocumentFormat(System.getProperty("format", DocumentFormat.JSON ) );
 
         Initialize init = new Initialize();
+        init.connectToDatabase();
         init.populate(dataSetSize, documentFormat);
     }
 
-    //TODO populate a provided dataset file
+    private void connectToDatabase()
+    {
+        try (MongoClient mongoClient = MongoClients.create(DEFAULT_CONNECTION_SETTINGS)) {
+            this.mongoDatabase = mongoClient.getDatabase("example");
+        }
+    }
 
     private void populate(int numberOfDocuments, DocumentFormat documentFormat){
 
@@ -71,18 +79,26 @@ public class Initialize {
 
     private void populateCsv( int numberOfDocuments )
     {
-        String listingsFile = getClass().getClassLoader().getResource("listings.csv").getFile();
-        try(CSVReader csvReader = new CSVReader(new FileReader( listingsFile ) ) ) {
+        for( String collectionName : COLLECTION_MAP.keySet())
+        {
+            mongoDatabase.createCollection(collectionName);
 
-            csvReader.readAll().forEach( line -> Arrays.stream(line).forEach(System.out::println) );
+            MongoCollection<Document> collection = mongoDatabase.getCollection( collectionName );
+            String collectionInputFile = getClass().getClassLoader().getResource( collectionName.concat(".csv")).getFile();
+            try(CSVReader csvReader = new CSVReader(new FileReader( collectionInputFile ) ) ) {
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (CsvException e) {
-            throw new RuntimeException(e);
-        } ;
+                String[] documentFields = csvReader.readNext();
+
+
+                String[] documentContent;
+                while ((documentContent = csvReader.readNext()) != null && 0 < documentContent.length) {
+
+                }
+            } catch (Exception e)
+            {
+                //TODO
+            }
+        }
     }
 
     private static void populatePlaintext( int numberOfDocuments )
