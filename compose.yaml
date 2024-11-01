@@ -8,13 +8,8 @@ services:
     volumes:
       - mongo-volume:/data/db
       - ./logs/:/var/log/mongodb/
-      - ./mongod.conf:/etc/mongod.conf
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
+      - ./config/mongoConfigs/mongod.conf:/etc/mongod.conf
+      - ./config/mongoInit.js:/docker-entrypoint-initdb.d/mongoInit.js
 volumes:
   mongo-volume:
 
