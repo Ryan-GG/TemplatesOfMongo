@@ -24,6 +24,7 @@
     <modules>
         <module>initialize</module>
         <module>pojo</module>
+        <module>authentication</module>
     </modules>
     <scm>
 		<connection/>

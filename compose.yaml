@@ -2,13 +2,13 @@ services:
   mongo:
     image: mongo:latest
     container_name: mongo-replset
-    environment:
-      MONGO_REPLICA_SET_NAME: rs0
-    command: ["mongod", "--replSet", "rs0", "--bind_ip_all" ]
+    command: ["mongod", "-f", "etc/mongod.conf"]
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - mongo-volume:/data/db
+      - ./logs/:/var/log/mongodb/
+      - ./mongod.conf:/etc/mongod.conf
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
       interval: 10s
@@ -16,5 +16,5 @@ services:
       retries: 5
 
 volumes:
-  mongo-data:
+  mongo-volume:
 

@@ -7,12 +7,8 @@ application:
   version: 1.0.0
   contact:
     name: "Ryan Gross"
-    email: "ryangros47@gmiail.com"
+    email: "ryangros47@gmail.com"
 
-# Profiles
-spring:
-  profiles:
-    active: dev # Set the active profile here (e.g., dev, prod, etc.)
 
 # MongoDB Configuration (development profile)
 ---
@@ -22,11 +18,12 @@ spring:
       on-profile: dev
   data:
     mongodb:
-      uri: mongodb://localhost:27017/example
+      host: localhost
+      port: 27017
       database: example
       username: user
       password: password
-      authentication-database: authentication
+      authentication-database: admin
 
 # MongoDB Configuration (production profile)
 ---
@@ -36,8 +33,9 @@ spring:
       on-profile: prod
   data:
     mongodb:
-      uri: mongodb://prod.mongodb.net:27017/production
+      host: prod.mongodb.net
+      port: 27017
       database: production
       username: user
       password: password
-      authentication-database: authentication
+      authentication-database: admin
