@@ -1,39 +1,46 @@
 services:
-  mongo:
+  mongo-primary:
     image: mongo:latest
-    container_name: mongo-replset
-    command: ["mongod", "-f", "etc/mongod.conf"]
+    container_name: mongo-primary
+    hostname: mongo-primary
+    command: ["mongod" , "-f", "/etc/mongod.conf"]
     ports:
       - "27017:27017"
     volumes:
       - mongo-primary-data:/data/db
       - ./logs/:/var/log/mongodb/
-      - ./config/mongoConfigs/primaryMongod.conf:/etc/mongod.conf
-      - ./config/mongoInit.js:/docker-entrypoint-initdb.d/mongoInit.js
+      - ./config/mongoConfigs/primary.conf:/etc/mongod.conf
+      #- ./config/initialize_replica_set.sh:/docker-entrypoint-initdb.d/initialize_replica_set.sh
     networks:
       - mongo-network
 
   mongo-secondary1:
-        image: mongo:latest
-        container_name: mongo-secondary1
-        command: ["mongod", "-f", "etc/mongod.conf"]
-        volumes:
-          - mongo-secondary1-data:/data/db
-          - ./config/mongoConfigs/secondaryOne.conf:/etc/mongod.conf
-          - ./logs/secondaryOne/:/var/log/mongodb/
-        networks:
-          - mongo-network
+    image: mongo:latest
+    container_name: mongo-secondary1
+    hostname: mongo-secondary1
+    command: ["mongod" , "-f", "/etc/mongod.conf"]
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-secondary1-data:/data/db
+      - ./config/mongoConfigs/secondary.conf:/etc/mongod.conf
+      - ./logs/secondaryOne/:/var/log/mongodb/
+    networks:
+      - mongo-network
 
   mongo-secondary2:
-        image: mongo:latest
-        container_name: mongo-secondary2
-        command: ["mongod", "-f", "etc/mongod.conf"]
-        volumes:
-          - mongo-secondary2-data:/data/db
-          - ./config/mongoConfigs/secondaryTwo.conf:/etc/mongod.conf
-          - ./logs/secondaryTwo/:/var/log/mongodb/
-        networks:
-          - mongo-network
+    image: mongo:latest
+    container_name: mongo-secondary2
+    hostname: mongo-secondary2
+    command: ["mongod" , "-f", "/etc/mongod.conf"]
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-secondary2-data:/data/db
+      - ./config/mongoConfigs/secondary.conf:/etc/mongod.conf
+      - ./logs/secondaryTwo/:/var/log/mongodb/
+    networks:
+      - mongo-network
 
 volumes:
   mongo-primary-data:
@@ -42,4 +49,3 @@ volumes:
 
 networks:
   mongo-network:
-
