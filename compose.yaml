@@ -10,9 +10,11 @@ services:
       - "27017:27017"
     volumes:
       - mongo-primary-data:/data/db
-      - ./logs/:/var/log/mongodb/
+      # - ./logs/:/var/log/mongodb/ logging
       - ./config/mongoConfigs/primary.conf:/etc/mongod.conf
-      #- ./config/initialize_replica_set.sh:/docker-entrypoint-initdb.d/initialize_replica_set.sh
+      - ./config/users:/users
+      #- ./config/keyfiles/keyfile.txt:/var/lib/keyfile.txt. for replica set auth
+      #- ./config/initialize_replica_set.sh:/docker-entrypoint-initdb.d/initialize_replica_set.sh run on start up
     networks:
       - mongo-network
     healthcheck:
@@ -32,7 +34,7 @@ services:
       start_period: 0s
       start_interval: 1s
       retries: 30
-  
+
 
   mongo-secondary1:
     image: mongo:latest
@@ -46,7 +48,8 @@ services:
     volumes:
       - mongo-secondary1-data:/data/db
       - ./config/mongoConfigs/secondary.conf:/etc/mongod.conf
-      - ./logs/secondaryOne/:/var/log/mongodb/
+      #- ./logs/secondaryOne/:/var/log/mongodb/
+      #- ./config/keyfiles/keyfile.txt:/var/lib/keyfile.txt
     networks:
       - mongo-network
 
@@ -62,7 +65,8 @@ services:
     volumes:
       - mongo-secondary2-data:/data/db
       - ./config/mongoConfigs/secondary.conf:/etc/mongod.conf
-      - ./logs/secondaryTwo/:/var/log/mongodb/
+      #- ./logs/secondaryTwo/:/var/log/mongodb/
+      #- ./config/keyfiles/keyfile.txt:/var/lib/keyfile.txt
     networks:
       - mongo-network
 
