@@ -1,4 +1,13 @@
 #!/bin/bash
 
-#If you see not primary, then the container is not ready yet
-docker exec mongo-primary bash -c 'mongosh admin /users/*'
+# Check if a container name is provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 <container_name>"
+  exit 1
+fi
+
+# Assign the container name from the first argument
+CONTAINER_NAME="$1"
+
+# Execute the mongosh command on the specified container
+docker exec "$CONTAINER_NAME" bash -c 'mongosh admin /users/*'

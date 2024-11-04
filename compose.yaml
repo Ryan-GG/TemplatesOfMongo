@@ -4,8 +4,6 @@ services:
     container_name: mongo-primary
     hostname: mongo-primary
     command: ["mongod" , "-f", "/etc/mongod.conf"]
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "27017:27017"
     volumes:
@@ -13,22 +11,10 @@ services:
       # - ./logs/:/var/log/mongodb/ logging
       - ./config/mongoConfigs/primary.conf:/etc/mongod.conf
       - ./config/users:/users
-      #- ./config/keyfiles/keyfile.txt:/var/lib/keyfile.txt. for replica set auth
-      #- ./config/initialize_replica_set.sh:/docker-entrypoint-initdb.d/initialize_replica_set.sh run on start up
     networks:
       - mongo-network
     healthcheck:
-      test: |
-        echo "try { rs.status() } catch (err) {
-          rs.initiate({
-            _id: 'rs0',
-            members: [
-              { _id: 0, host: 'host.docker.internal:27017', priority: 1 },
-              { _id: 1, host: 'host.docker.internal:27018', priority: 0.5 },
-              { _id: 2, host: 'host.docker.internal:27019', priority: 0.5 }
-            ]
-          })
-        }" | mongosh --port 27017 --quiet
+      test: echo "rs.status()"
       interval: 5s
       timeout: 30s
       start_period: 0s
@@ -41,15 +27,12 @@ services:
     container_name: mongo-secondary1
     hostname: mongo-secondary1
     command: ["mongod" , "-f", "/etc/mongod.conf"]
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "27018:27017"
     volumes:
       - mongo-secondary1-data:/data/db
       - ./config/mongoConfigs/secondary.conf:/etc/mongod.conf
-      #- ./logs/secondaryOne/:/var/log/mongodb/
-      #- ./config/keyfiles/keyfile.txt:/var/lib/keyfile.txt
+      - ./config/users:/users
     networks:
       - mongo-network
 
@@ -59,14 +42,13 @@ services:
     hostname: mongo-secondary2
     command: ["mongod" , "-f", "/etc/mongod.conf"]
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "mongo-secondary2:127.0.0.1"
     ports:
       - "27019:27017"
     volumes:
       - mongo-secondary2-data:/data/db
       - ./config/mongoConfigs/secondary.conf:/etc/mongod.conf
-      #- ./logs/secondaryTwo/:/var/log/mongodb/
-      #- ./config/keyfiles/keyfile.txt:/var/lib/keyfile.txt
+      - ./config/users:/users
     networks:
       - mongo-network
 
@@ -77,3 +59,4 @@ volumes:
 
 networks:
   mongo-network:
+    driver: bridge

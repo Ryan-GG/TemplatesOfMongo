@@ -1,5 +1,5 @@
 db.createUser({
-     user: 'ReadpnlyUser',
-     pwd: 'ReadpnlyUser',
+     user: 'ReadonlyUser',
+     pwd: 'ReadonlyUser',
      roles: [{ role: 'read', db: 'admin' }]
  });
